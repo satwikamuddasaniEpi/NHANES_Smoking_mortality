@@ -2,10 +2,10 @@
 
 Survey weighted survival analysis of cigarette smoking status (never, former, current) and all cause mortality among US adults aged 20 years or older, using the National Health and Nutrition Examination Survey (NHANES) 2009 to 2018 linked to the NCHS 2019 Public Use Linked Mortality File.
 
-**Author:** Satwika Muddasani, MPH
-**Preprint:** [add medRxiv link once posted]
+Author: Satwika Muddasani, MPH
 
-## Data
+
+ Data
 
 All data are public and de identified. The script downloads them automatically from CDC:
 
@@ -42,7 +42,7 @@ No data files are stored in this repository.
 
 ## Reporting
 
-The manuscript follows the STROBE guidelines for cohort studies.
+The analysis is reported following the STROBE guidelines for observational cohort studies. A manuscript based on this analysis is in preparation for journal submission.
 
 ## License
 

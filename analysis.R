@@ -205,7 +205,10 @@ dev.off()
 lr <- svylogrank(Surv(time_y, death) ~ smoke3, design = des)
 
 # ---- 6. Survey weighted Cox models -------------------------------------------
-m1 <- svycoxph(Surv(time_y, death) ~ smoke3 + RIDAGEYR + sex, design = des)
+# All nested models use the same complete case sample (desF) for comparability
+m1 <- svycoxph(Surv(time_y, death) ~ smoke3 + RIDAGEYR + sex, design = desF)
+# Model 1 in the full analytic sample, reported in text for comparison
+m1_full <- svycoxph(Surv(time_y, death) ~ smoke3 + RIDAGEYR + sex, design = des)
 m2 <- svycoxph(Surv(time_y, death) ~ smoke3 + RIDAGEYR + sex + race + educ + pir_cat,
                design = desF)
 m3 <- svycoxph(Surv(time_y, death) ~ smoke3 + RIDAGEYR + sex + race + educ + pir_cat +
@@ -287,6 +290,9 @@ cat("RAO SCOTT LOG RANK TEST\n"); print(lr); cat("\n")
 cat("COX MODELS (reference = Never)\n"); print(cox_tab, row.names = FALSE); cat("\n")
 for (i in seq_len(nrow(cox_tab)))
   cat(cox_tab$model[i], "|", cox_tab$term[i], ":", fmt(cox_tab[i, ]), "\n")
+m1f <- exp(cbind(HR = coef(m1_full), confint(m1_full)))
+cat("Model 1 in full analytic sample (n =", m1_full$n, "): Former", sprintf("%.2f (%.2f to %.2f)", m1f[1,1], m1f[1,2], m1f[1,3]),
+    "| Current", sprintf("%.2f (%.2f to %.2f)", m1f[2,1], m1f[2,2], m1f[2,3]), "\n")
 cat("\nCurrent vs Former (Model 3): HR", round(cur_vs_former[1], 2),
     "(95% CI", round(cur_vs_former[2], 2), "to", round(cur_vs_former[3], 2), ")\n\n")
 cat("SENSITIVITY\n"); print(sens, row.names = FALSE); cat("\n")
@@ -296,6 +302,13 @@ cat("N =", r1$n, "| deaths =", r1$nevent, "| HR ever vs never",
     sprintf("%.2f (95%% CI %.2f to %.2f)", rep_hr[1], rep_hr[2], rep_hr[3]), "\n")
 cat("Original SAS: N = 5,524, HR 1.78 (95% CI 1.25 to 2.53), p = 0.001\n")
 sink()
+
+# ---- 11. Export the cleaned analytic dataset --------------------------------
+clean <- dat[dat$in_analysis, c("SEQN", "cycle", "RIDAGEYR", "sex", "race", "educ",
+  "INDFMPIR", "pir_cat", "BMXBMI", "bmi_cat", "SMQ020", "SMQ040", "smoke3", "ever",
+  "ELIGSTAT", "MORTSTAT", "UCOD_LEADING", "PERMTH_EXM", "time_y", "death",
+  "SDMVPSU", "SDMVSTRA", "WTMEC2YR", "wt5", "in_full")]
+write.csv(clean, "results/nhanes_smoking_mortality_clean.csv", row.names = FALSE)
 
 cat("\nDone. Open results/results_summary.txt and copy the numbers into the manuscript.\n")
 sessionInfo()

@@ -26,6 +26,19 @@ No data files are stored in this repository.
 * Proportional hazards checked with Schoenfeld residuals
 * Sensitivity analyses: excluding the first 12 months of follow up, ever vs never smoking, and attained age as the time scale
 
+## Work completed
+
+The R script (`analysis.R`) builds the analytic dataset and runs the full analysis from publicly available source files:
+
+1. **Retrieve and pool source files.** It downloads demographics, smoking, and body-measure XPT files for the five NHANES two-year cycles from 2009–2010 through 2017–2018, along with each cycle's NCHS linked mortality file. It joins them by participant identifier and pools the cycles.
+2. **Define the study variables and sample.** Smoking status is classified as never, former, or current from the NHANES cigarette-use questions. The script derives demographic and socioeconomic covariates, BMI categories, follow-up time, and mortality status. The primary analytic sample is adults aged 20 or older who are eligible for mortality linkage and have valid smoking and follow-up data; the fully adjusted models use a common complete-case sample.
+3. **Account for the survey design.** Analyses use NHANES examination weights, strata, and primary sampling units, with the two-year MEC weights divided by five for the pooled cycles.
+4. **Estimate associations.** Outputs include weighted participant characteristics, Kaplan–Meier curves and a Rao–Scott log-rank test, and nested survey-weighted Cox models adjusting first for age and sex, then race/ethnicity, education and income-to-poverty ratio, and finally BMI.
+5. **Assess assumptions and robustness.** The script checks proportional hazards using Schoenfeld residuals and runs prespecified sensitivity analyses: removing the first year of follow-up, comparing ever versus never smoking, and using attained age as the time scale.
+6. **Save reproducible outputs.** Tables, a survival figure, model diagnostics, a text summary, and a cleaned one-row-per-participant analysis file are written to `results/`.
+
+This is an observational analysis. The models estimate associations and do not establish that smoking status caused an individual's mortality outcome.
+
 ## How to run
 
 1. Install R (version 4.2 or newer) and RStudio, or use Posit Cloud.
